@@ -1,5 +1,4 @@
 
-
 MENU = {
     "espresso": {
         "ingredients": {
@@ -32,5 +31,30 @@ resources = {
     "coffee": 100,
 }
 
-# TODO 1. Get TODO to work
-# TODO 2. Connect to github
+
+def start():
+
+    def print_report():
+        for key, val in resources.items():
+            product = key
+            amount = val
+            print(f"{product} : {amount}")
+
+    print("\nDRINKS MENU")
+    for k, v in MENU.items():
+        beverage = k
+        price = v["cost"]
+        print(f"{beverage} : £{price}")
+
+    user_input = input("What would you like?\n")
+    if user_input == "off":
+        print("The process has stopped.")
+        return
+    elif user_input == "report":
+        print_report()
+
+
+start()
+
+
+# def check_resources():
