@@ -1,7 +1,7 @@
 # coffee-machine-challenge
 A coffee machine simulation using python
 
-##2 Requirements
+## 2 Requirements
 
 **1. Prompt user by asking “What would you like? (espresso/latte/cappuccino):”**
 a. Check the user’s input to decide what to do next.
