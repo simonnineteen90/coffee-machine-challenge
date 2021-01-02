@@ -28,15 +28,20 @@ MENU = {
 INPUTS = ["latte", "espresso", "cappuccino"]
 
 resources = {
-    "water": 0,
+    "water": 300,
     "milk": 200,
     "coffee": 100,
+    "money": 0,
 }
 
 
 def start():
 
     def restart():
+        """
+        Ask user if they want to restart programme
+        """
+
         restart = input("Press 'R' to restart or 'Q' to quit\n").lower()
         if restart == "r":
             start()
@@ -48,13 +53,11 @@ def start():
         Gives info of what resources are available
 
         """
-
         for key, val in resources.items():
             product = key
             amount = val
             print(f"{product} : {amount}")
-        restart()
-
+        start()
 
     def res_check(drink_name):
         """
@@ -74,19 +77,58 @@ def start():
             "coffee": coffee,
         }
         if drink_requirements["water"] >= resources["water"]:
-            print("Not enough water")
+            print("Not enough water! Stopping machine.")
             return False
         elif drink_requirements["coffee"] >= resources["coffee"]:
-            print("Not enough coffee")
+            print("Not enough coffee! Stopping machine.")
             return False
         elif drink_requirements["milk"] >= resources["milk"]:
-            print("Not enough milk")
+            print("Not enough milk! Stopping machine.")
             return False
         else:
-            print("satis")
+            print("Resources satis")
             return True
 
+    def process_coins(drink_price):
+        """
+        Asks user how many of each coin inputted then calculates if correct amount has been paid for selected drink.
+        :param drink_price:
+        :return:
+        """
+        quarters = int(input("How many quarters: \n")) * .25
+        dimes = int(input("How many dimes: \n")) * .1
+        nickles = int(input("How many nickles: \n")) * .05
+        pennies = int(input("How many pennies: \n")) * .01
+        coins = [quarters, dimes, nickles, pennies]
+        total_coins = round(sum(coins), 2)
 
+        if total_coins >= drink_price:
+            print(f"You have entered ${total_coins}, drink price is ${drink_price}: satis.")
+            if total_coins > drink_price:
+                overpaid = round((total_coins - drink_price), 2)
+                print(f"You have overpaid. Refunding ${overpaid}.")
+            return True
+        else:
+            print(
+                f"You have entered ${total_coins}, drink price is ${drink_price}: Not enough coins. ${total_coins} refunded.")
+            return False
+
+    def make_coffee(price, user_input):
+        """
+        update the resources by adding the price and decucting the coffee/milk/water
+        :param price:
+        :param user_input:
+        :return:
+        """
+        resources["money"] += price
+        resources["water"] -= MENU[user_input]["ingredients"]["water"]
+        resources["coffee"] -= MENU[user_input]["ingredients"]["coffee"]
+        if user_input != "espresso":
+            resources["milk"] -= MENU[user_input]["ingredients"]["milk"]
+        print(f"Here is your {user_input} Enjoy!")
+
+
+    # process starts here
     print("\nDRINKS MENU")
     for k, v in MENU.items():
         beverage = k
@@ -95,7 +137,14 @@ def start():
 
     user_input = input("What would you like?\n")
     if user_input in INPUTS:
-        res_check(user_input)
+        price = MENU[user_input]["cost"]
+        if res_check(user_input):
+            print(f"price is equal to: {price}")
+            if process_coins(price):
+                make_coffee(price, user_input)
+                restart()
+
+
     elif user_input == "off":
         print("The process has stopped.")
         return
@@ -109,3 +158,7 @@ def start():
 
 
 start()
+
+
+
+
